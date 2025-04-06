@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ report_date }} 주식 포트폴리오 분석 레포트</title>
+  <!-- 💬 {{ report_date }}: YYYY.MM.DD 형식의 리포트 날짜 -->
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 40px; line-height: 1.6; background-color: #f5f7fa; }
+    h1 { color: #1e2a38; border-bottom: 3px solid #4a90e2; padding-bottom: 10px; font-size: 28px; }
+    h2 { color: #2c3e50; margin-top: 40px; font-size: 22px; }
+    .section { margin-top: 20px; padding: 25px; background: #ffffff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card { background: #fdfdfd; border: 1px solid #e0e0e0; border-left: 5px solid #4a90e2; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .blue { color: #2b6cb0; font-weight: bold; }
+    .red { color: #e53e3e; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background: #f1f1f1; color: #333; font-weight: 600; }
+    .highlight { background: #fff9e5; padding: 18px; border-left: 6px solid #f1c40f; border-radius: 10px; }
+    details summary { cursor: pointer; font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>📅 {{ report_date }} 주식 포트폴리오 분석 리포트</h1>
+
+  <!-- 그룹 1: 자산 요약 -->
+  <div class="section group1">
+    <h2>📊 그룹 1. 자산 요약 및 수익률</h2>
+
+    <div class="card">
+      <strong>💰 총 평가금액:</strong>
+      <p style="font-size: 20px; font-weight: bold; color: #2b6cb0;">{{ total_value }}</p>
+      <!-- 💬 {{ total_value }}: 포트폴리오 전체 평가금액 -->
+    </div>
+
+    <div class="card">
+      <strong>📋 보유 주식 현황</strong>
+      {{ stock_table }}
+      <!-- 💬 {{ stock_table }}: 평균단가/현재가/보유수량/총수익률 테이블 (HTML Table 형식) -->
+    </div>
+
+    <div class="card">
+      <strong>📊 주식별 비중 차트</strong>
+      <img src="{{ weight_chart_url }}" alt="비중 차트">
+      <!-- 💬 {{ weight_chart_url }}: 주식별 평가금액 비중 차트 이미지 URL -->
+    </div>
+
+    <div class="card">
+      <strong>📊 보유량 기준 차트</strong>
+      <img src="{{ volume_chart_url }}" alt="보유량 차트">
+      <!-- 💬 {{ volume_chart_url }}: 보유 주식 수 기준 차트 이미지 URL -->
+    </div>
+  </div>
+
+  <!-- 그룹 2: 시장 요약 -->
+  <div class="section group2">
+    <h2>📈 그룹 2. 시장 요약 및 분석</h2>
+    {{ market_index_table }}
+    <!-- 💬 {{ market_index_table }}: 코스피, 나스닥, S&P500 등 주요 지수 등락 테이블 -->
+
+    <div class="highlight">
+      <h3>📉 시장 변동 요인 및 상세 분석</h3>
+      {{ market_analysis }}
+      <!-- 💬 {{ market_analysis }}: 뉴스 5개 교차검증 기반의 요약 분석 HTML (5줄 이상) -->
+    </div>
+  </div>
+
+  <!-- 그룹 3: 심리 지표 및 전략 -->
+  <div class="section group3">
+    <h2>🧭 그룹 3. 시장 심리 및 전략 지표 분석</h2>
+
+    {{ strategy_table }}
+    <!-- 💬 {{ strategy_table }}: Fear & Greed Index, VIX, 10Y금리, DXY, FOMC 테이블 -->
+
+    <div class="highlight">
+      <h3>🧠 지표 해석 및 전략 제안</h3>
+      {{ indicator_insight }}
+      <!-- 💬 {{ indicator_insight }}: 각 지표 해석 및 전략 제안 -->
+    </div>
+
+    <div class="card">
+      <strong>📌 오늘의 전략 코멘트</strong>
+      <p>{{ today_strategy_comment }}</p>
+      <!-- 💬 {{ today_strategy_comment }}: 한 줄 전략 요약 코멘트 -->
+    </div>
+  </div>
+
+  <!-- 그룹 4: 종목 상세 분석 -->
+  <div class="section group4">
+    <h2>📦 그룹 4. 보유 종목별 상세 분석</h2>
+    {{ stock_analysis_sections }}
+    <!-- 💬 {{ stock_analysis_sections }}: 각 종목별 토글 상세 분석 (JEPI, JEPQ 등) -->
+  </div>
+
+</body>
+</html>
