@@ -48,38 +48,38 @@ stock_table = """
   <tbody>
 """ + "\n".join(stock_table_rows) + "\n  </tbody></table>"
 
-# 3. GPT 프롬프트 구성
-stock_summary = "\n".join([
-    f"{ticker}: 현재가 ${today[ticker]:.2f}, 평균단가 ${portfolio[ticker]['avg_price']:.2f}, 수익률 {((today[ticker] - portfolio[ticker]['avg_price']) / portfolio[ticker]['avg_price']) * 100:.2f}%"
-    for ticker in tickers
-])
-
+# GPT 프롬프트 구성
 prompt = f"""
-너는 금융 애널리스트야. 아래는 사용자 포트폴리오 요약이야:
+너는 미국 주식 애널리스트야.
+다음은 사용자의 포트폴리오 종목별 정보야:
 
 {stock_summary}
 
-이 포트폴리오를 기준으로 아래 항목들을 분석해줘:
-1. 시장 요약 테이블 (S&P500, Nasdaq, Kospi 등)
-2. 시장 분석 요약 (뉴스 기반)
-3. 심리지표 요약 (Fear&Greed, VIX 등) + 전략 코멘트
-4. 종목별 분석 (JEPI, JEPQ 등)
-
-결과를 각각 아래 변수에 맞춰 HTML 조각으로 반환해:
-- market_index_table
-- market_analysis
-- strategy_table
-- indicator_insight
-- today_strategy_comment
-- stock_analysis_sections
+아래 항목을 각각 HTML 형식으로 분석해줘.
+1. 그룹_2: 시장 요약 및 상세 분석 (뉴스 5개 이상 기반, )
+2. 그룹_3: 시장 심리 및 전략 지표 분석
+3. 그룹_4: JEPI, JEPQ, SCHD, QQQM, O, NVDA, TSLA, CONY 종목 상세 분석
 """
 
+print("[DEBUG] GPT에 보낼 프롬프트:\n", prompt)  # ✅ GPT 요청 확인용 로그
+
+# GPT 요청
 response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[{"role": "user", "content": prompt}]
 )
 
-content = response.choices[0].message.content
+# ✅ GPT 응답 전체 확인
+print("[DEBUG] GPT 응답 전체:\n", response)
+
+# ✅ GPT 응답 내용 추출
+try:
+    gpt_content = response.choices[0].message.content
+    print("[DEBUG] GPT 응답 본문:\n", gpt_content)
+except Exception as e:
+    print("[ERROR] GPT 응답 파싱 실패:", str(e))
+    gpt_content = "<p>⚠️ GPT 응답 오류 - 리포트를 생성하지 못했습니다.</p>"
+
 
 # 4. 템플릿 로드 및 채우기
 with open("report_template.html", "r", encoding="utf-8") as f:
@@ -89,10 +89,8 @@ report_html = template.replace("{{ report_date }}", datetime.today().strftime("%
 report_html = report_html.replace("{{ total_value }}", f"${total_value:,.2f}")
 report_html = report_html.replace("{{ stock_table }}", stock_table)
 
-# GPT 결과를 변수별로 나누기 (간단한 구조 가정)
 for key in ["market_index_table", "market_analysis", "strategy_table", "indicator_insight", "today_strategy_comment", "stock_analysis_sections"]:
     placeholder = f"{{{{ {key} }}}}"
-    # 키별 구분자 사용 시 적절히 파싱 필요
     extracted = content.split(f"[{key}]")[1].split(f"[/{key}]")[0].strip() if f"[{key}]" in content else "(데이터 없음)"
     report_html = report_html.replace(placeholder, extracted)
 
