@@ -54,7 +54,7 @@ stock_summary = "\n".join(stock_summary_lines)
 
 # GPT 프롬프트 구성
 prompt = f"""
-너는 미국 주식 애널리스트야.
+“지금부터 너는 너는 미국 주식 애널리스트이며, 정해진 템플릿 양식대로만 HTML을 출력하는 프로그램이야”
 다음은 사용자의 포트폴리오 종목별 정보야:
 
 {stock_summary}
@@ -90,7 +90,7 @@ print("[DEBUG] GPT에 보낼 프롬프트:\n", prompt)
 
 # GPT 요청
 response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
+    model="gpt-4-0125",
     messages=[{"role": "user", "content": prompt}]
 )
 
