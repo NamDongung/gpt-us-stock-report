@@ -59,10 +59,31 @@ prompt = f"""
 
 {stock_summary}
 
-아래 항목을 각각 HTML 형식으로 분석해줘.
-1. 그룹_2: 시장 요약 및 상세 분석 (뉴스 5개 이상 기반, )
-2. 그룹_3: 시장 심리 및 전략 지표 분석
-3. 그룹_4: JEPI, JEPQ, SCHD, QQQM, O, NVDA, TSLA, CONY 종목 상세 분석
+아래 항목을 반드시 각각 [key]와 [/key] 태그 안에 HTML 형식으로 작성해줘. 각 항목은 다음과 같아:
+
+[market_index_table]
+S&P500, NASDAQ, 다우존스, 코스피, 코스닥, USD/KRW 등 주요 지수 요약 테이블 (전일 등락률, 시가/종가, 52주 고저 포함)
+[/market_index_table]
+
+[market_analysis]
+시장 변동 요인 (뉴스 5개 이상 기반, 금리, 전쟁, 경제지표 등) — 5줄 이상 분석 + 출처 포함
+[/market_analysis]
+
+[strategy_table]
+VIX, Fear & Greed Index, 10Y 금리, 달러인덱스 DXY 등 핵심 지표 요약 테이블 + 수치 + 출처 링크
+[/strategy_table]
+
+[indicator_insight]
+각 지표에 대한 상세 해석 및 내 포트폴리오 전략 관점에서의 의미 (배당주/성장주/방어주 등 중심으로)
+[/indicator_insight]
+
+[today_strategy_comment]
+오늘의 리스크/기회 요약 전략 코멘트 (1줄)
+[/today_strategy_comment]
+
+[stock_analysis_sections]
+JEPI, JEPQ, SCHD, QQQM, O, NVDA, TSLA, CONY 종목에 대한 상세 분석. 각 항목은 <details>로 토글 구성. 시장 해석은 5개 이상 기사 교차 검증된 분석으로 작성.
+[/stock_analysis_sections]
 """
 
 print("[DEBUG] GPT에 보낼 프롬프트:\n", prompt)
