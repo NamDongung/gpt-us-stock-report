@@ -21,7 +21,7 @@ with open("portfolio.json", "r") as f:
     portfolio = json.load(f)
 
 # 2. 주가 데이터 수집
-print("📥 주가 데이터 수집 중...")
+print("\U0001F4E5 주가 데이터 수집 중...")
 tickers = list(portfolio.keys())
 data = yf.download(tickers, period="2d", interval="1d")["Close"]
 yesterday = data.iloc[-2]
@@ -29,6 +29,7 @@ today = data.iloc[-1]
 
 stock_table_rows = []
 total_value = 0
+stock_summary_lines = []
 
 for ticker in tickers:
     avg_price = portfolio[ticker]["avg_price"]
@@ -41,12 +42,15 @@ for ticker in tickers:
     stock_table_rows.append(
         f"<tr><td>{ticker}</td><td>${avg_price:.2f}</td><td>${curr:.2f}</td><td>{shares}</td><td>${value:,.2f}</td><td class=\"{pnl_color}\">{pnl_pct:+.1f}%</td></tr>"
     )
+    stock_summary_lines.append(f"{ticker}: 현재가 ${curr:.2f}, 평균단가 ${avg_price:.2f}, 수익률 {pnl_pct:.2f}%")
 
 stock_table = """
 <table>
   <thead><tr><th>Ticker</th><th>평균단가</th><th>현재가</th><th>수량</th><th>평가금액</th><th>수익률</th></tr></thead>
   <tbody>
 """ + "\n".join(stock_table_rows) + "\n  </tbody></table>"
+
+stock_summary = "\n".join(stock_summary_lines)
 
 # GPT 프롬프트 구성
 prompt = f"""
@@ -61,7 +65,7 @@ prompt = f"""
 3. 그룹_4: JEPI, JEPQ, SCHD, QQQM, O, NVDA, TSLA, CONY 종목 상세 분석
 """
 
-print("[DEBUG] GPT에 보낼 프롬프트:\n", prompt)  # ✅ GPT 요청 확인용 로그
+print("[DEBUG] GPT에 보낼 프롬프트:\n", prompt)
 
 # GPT 요청
 response = openai.ChatCompletion.create(
@@ -69,17 +73,14 @@ response = openai.ChatCompletion.create(
     messages=[{"role": "user", "content": prompt}]
 )
 
-# ✅ GPT 응답 전체 확인
 print("[DEBUG] GPT 응답 전체:\n", response)
 
-# ✅ GPT 응답 내용 추출
 try:
     gpt_content = response.choices[0].message.content
     print("[DEBUG] GPT 응답 본문:\n", gpt_content)
 except Exception as e:
     print("[ERROR] GPT 응답 파싱 실패:", str(e))
     gpt_content = "<p>⚠️ GPT 응답 오류 - 리포트를 생성하지 못했습니다.</p>"
-
 
 # 4. 템플릿 로드 및 채우기
 with open("report_template.html", "r", encoding="utf-8") as f:
@@ -91,12 +92,12 @@ report_html = report_html.replace("{{ stock_table }}", stock_table)
 
 for key in ["market_index_table", "market_analysis", "strategy_table", "indicator_insight", "today_strategy_comment", "stock_analysis_sections"]:
     placeholder = f"{{{{ {key} }}}}"
-    extracted = content.split(f"[{key}]")[1].split(f"[/{key}]")[0].strip() if f"[{key}]" in content else "(데이터 없음)"
+    extracted = gpt_content.split(f"[{key}]")[1].split(f"[/{key}]")[0].strip() if f"[{key}]" in gpt_content else "(데이터 없음)"
     report_html = report_html.replace(placeholder, extracted)
 
 # 5. 이메일 발송
 msg = MIMEMultipart("alternative")
-msg["Subject"] = "📈 오늘의 GPT 주식 리포트"
+msg["Subject"] = "\U0001F4C8 오늘의 GPT 주식 리포트"
 msg["From"] = EMAIL_USER
 msg["To"] = EMAIL_RECEIVER
 part = MIMEText(report_html, "html")
@@ -110,7 +111,7 @@ with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
 # 6. 텔레그램 전송
 requests.post(
     f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
-    data={"chat_id": TELEGRAM_CHAT_ID, "text": "📬 GPT 주식 리포트가 발송되었습니다! ✉️"}
+    data={"chat_id": TELEGRAM_CHAT_ID, "text": "\U0001F4EC GPT 주식 리포트가 발송되었습니다! ✉️"}
 )
 
 print("✅ 리포트 전송 완료")
