@@ -1,0 +1,10 @@
+{
+  "JEPI": {"shares": 228.46, "avg_price": 55.52},
+  "JEPQ": {"shares": 142.67, "avg_price": 52.34},
+  "SCHD": {"shares": 125.94, "avg_price": 27.19},
+  "QQQM": {"shares": 17.91, "avg_price": 198.16},
+  "O":    {"shares": 54,     "avg_price": 51.87},
+  "NVDA": {"shares": 14,     "avg_price": 120.25},
+  "TSLA": {"shares": 5,      "avg_price": 423.89},
+  "CONY": {"shares": 175,    "avg_price": 12.80}
+}
