@@ -90,7 +90,7 @@ print("[DEBUG] GPT에 보낼 프롬프트:\n", prompt)
 
 # GPT 요청
 response = openai.ChatCompletion.create(
-    model="gpt-4-0125",
+    model="gpt-4o",
     messages=[{"role": "user", "content": prompt}]
 )
 
