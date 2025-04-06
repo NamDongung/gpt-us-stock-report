@@ -66,7 +66,7 @@ part = MIMEText(gpt_html, "html")
 msg.attach(part)
 
 context = ssl.create_default_context()
-with smtplib.SMTP_SSL("smtp.naver.com", 465, context=context) as server:
+with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
     server.login(EMAIL_USER, EMAIL_PASS)
     server.sendmail(EMAIL_USER, EMAIL_RECEIVER, msg.as_string())
 
