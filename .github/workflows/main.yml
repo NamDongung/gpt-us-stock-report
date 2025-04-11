@@ -2,7 +2,7 @@ name: Daily US Stock Report
 
 on:
   schedule:
-    - cron: '0 23 * * *'  # 한국 시간 기준 매일 오전 8시 실행 (UTC 기준 23시)
+    - cron: ''  # 한국 시간 기준 매일 오전 8시 실행 (UTC 기준 23시)
   workflow_dispatch:
 
 jobs:
